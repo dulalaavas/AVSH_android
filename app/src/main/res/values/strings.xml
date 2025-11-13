@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">DSGAVS</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_dashboard">DashboardActivity</string>
 </resources>
