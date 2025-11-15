@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,13 +15,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,64 +47,92 @@ class ProfileActivity : ComponentActivity() {
 }
 
 @Composable
-fun ProfileBody(){
-    Scaffold { padding ->
+fun ProfileBody() {
+    Scaffold(
+        bottomBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.round_home_24),
+                    contentDescription = null
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.round_search_24),
+                    contentDescription = null
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_smart_display_24),
+                    contentDescription = null
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.round_send_24),
+                    contentDescription = null
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.round_person_outline_24),
+                    contentDescription = null
+                )
+            }
+        }
+    ) { padding ->
         Column(
-            modifier = Modifier
-                .padding(padding)
-        ){
+            modifier = Modifier.padding(padding)
+        ) {
+
+            // Top Row
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
+            ) {
                 Icon(
-                    painter = painterResource(
-                            id = R.drawable.baseline_arrow_back_ios_new_24),
-                        contentDescription = null
-                    )
+                    painter = painterResource(id = R.drawable.baseline_arrow_back_ios_new_24),
+                    contentDescription = null
+                )
                 Text(text = "DSGAVS")
                 Icon(
-                    painter = painterResource(
-                        id = R.drawable.baseline_more_horiz_24),
+                    painter = painterResource(id = R.drawable.baseline_more_horiz_24),
                     contentDescription = null
                 )
             }
-            Row(modifier = Modifier.fillMaxWidth(),
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround)
-            {
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
                 Image(
                     painter = painterResource(R.drawable.avshsq),
                     contentDescription = null,
                     modifier = Modifier
                         .size(90.dp)
-                        .clip(shape = CircleShape),
+                        .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("300")
                     Text("Posts")
                 }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("1.2M")
                     Text("Followers")
                 }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("9")
                     Text("Followings")
                 }
-
             }
+
             Spacer(modifier = Modifier.height(20.dp))
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -111,42 +145,28 @@ fun ProfileBody(){
                 )
                 Text("Hello my name is Aavash. Hehe 😂✌")
             }
+            Row  (modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround) {
+            Button(
+                onClick = {
 
-            Row(modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.SpaceAround
-            )
-            {
-                Icon(
-                    painter = painterResource(
-                        id = R.drawable.round_home_24),
-                    contentDescription = null
+                },
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(2.dp, Color.Black),
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color.Black
                 )
-                Icon(
-                    painter = painterResource(
-                        id = R.drawable.round_search_24),
-                    contentDescription = null
-                )
-                Icon(
-                    painter = painterResource(
-                        id = R.drawable.outline_smart_display_24),
-                    contentDescription = null
-                )
-                Icon(
-                    painter = painterResource(
-                        id = R.drawable.round_send_24),
-                    contentDescription = null
-                )
-                Icon(
-                    painter = painterResource(
-                        id = R.drawable.round_person_outline_24),
-                    contentDescription = null
-                )
-
+            ) {
+                Text("Follow")
+            }
+                OutlinedButton(onClick = {}) {
+                    Text("Message")
+                }
             }
         }
     }
 }
+
 
 @Preview
 @Composable
