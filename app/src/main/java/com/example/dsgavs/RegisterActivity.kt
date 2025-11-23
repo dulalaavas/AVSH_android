@@ -4,9 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,14 +14,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -35,10 +35,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -49,99 +51,54 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.dsgavs.ui.theme.Black
+import androidx.compose.ui.unit.toSize
 import com.example.dsgavs.ui.theme.Blue
 import com.example.dsgavs.ui.theme.PurpleGrey80
-import com.example.dsgavs.ui.theme.White
 
-class LoginActivity : ComponentActivity() {
+class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LoginBody()
+            RegisterBody()
+            
         }
     }
 }
 
 @Composable
-fun LoginBody() {
+fun RegisterBody(){
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var visibility by remember { mutableStateOf(false) }
+    var terms by remember { mutableStateOf(false) }
+
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf("Select Option") }
+
+    val options = listOf("Option 1", "Option 2", "Option 3", "Option 4")
+
+    var textFieldSize by remember { mutableStateOf(Size.Zero)}
 
     Scaffold { padding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .background(White)
+            modifier = Modifier.fillMaxSize().padding(padding)
         ) {
-            Spacer(modifier = Modifier.height(80.dp))
-
-            Text(
-                "Sign In",
-                style = TextStyle(
-                    textAlign = TextAlign.Center,
-                    color = Blue,
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(15.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Sign Up",
+                    modifier = Modifier.padding(15.dp),
+                    fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 28.sp
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Text(
-                "Hello User! Lets start this wonderful journey together. Please sign in to continue.",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp, vertical = 20.dp),
-                style = TextStyle(
-                    color = Black.copy(0.5f),
-                    textAlign = TextAlign.Center
-                )
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp)
-            ) {
-                SocialMediaCard(
-                    Modifier
-                        .height(60.dp)
-                        .weight(1f),
-                    R.drawable.facebook,
-                    "Facebook"
-                )
-
-                Spacer(modifier = Modifier.width(20.dp))
-                SocialMediaCard(
-                    Modifier
-                        .height(60.dp)
-                        .weight(1f),
-                    R.drawable.google,
-                    "Google"
-                )
-
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp, vertical = 30.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                HorizontalDivider(
-                    modifier = Modifier.weight(1f)
-                )
-                Text("OR", modifier = Modifier.padding(horizontal = 15.dp))
-
-                HorizontalDivider(
-                    modifier = Modifier.weight(1f)
+                    textAlign = TextAlign.Center,
+                    color = Blue
                 )
             }
-
             OutlinedTextField(
                 value = email,
                 onValueChange = { data ->
@@ -204,16 +161,67 @@ fun LoginBody() {
 
             )
 
-            Text(
-                "Forget Password?",
-                style = TextStyle(
-                    color = Blue,
-                    textAlign = TextAlign.End
-                ),
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 15.dp, vertical = 15.dp)
-            )
+                    .padding(16.dp)) {
+                OutlinedTextField(
+                    value = selectedOptionText,
+                    onValueChange = { },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onGloballyPositioned { coordinates ->
+                            textFieldSize = coordinates.size.toSize()
+                        }
+                        .clickable { expanded = true },
+                    shape = RoundedCornerShape(15.dp),
+                    placeholder = { Text(text = "Select Option") },
+                    enabled = false,
+                    trailingIcon = {
+                        Icon(
+                            painter = if (visibility)
+                                painterResource(R.drawable.baseline_keyboard_arrow_down_24)
+                            else
+                                painterResource(R.drawable.baseline_keyboard_arrow_up_24),
+                            contentDescription = null
+                        )
+
+                    }
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier
+                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                ) {
+                    options.forEach { option ->
+                        DropdownMenuItem(
+                            text = { Text(option) },
+                            onClick = {
+                                selectedOptionText = option
+                                expanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            Row( modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
+                verticalAlignment = Alignment.CenterVertically){
+                Checkbox(
+                    checked = terms,
+                    onCheckedChange = {
+                        terms = it
+
+                    }
+                )
+                Text("I agree to the terms and conditions.",
+                    modifier = Modifier,
+                    fontSize = 18.sp
+                )
+
+
+            }
 
             Button(
                 onClick = {},
@@ -226,45 +234,23 @@ fun LoginBody() {
                 ),
                 shape = RoundedCornerShape(10.dp)
             ) {
-                Text("Log In")
+                Text("Sign Up")
             }
 
-            Text(buildAnnotatedString {
-                append("Don't have an account? ")
 
-                withStyle(SpanStyle(color = Blue)){
-                    append("Sign up")
+            Text(buildAnnotatedString {
+                append("Already have an account?")
+
+                withStyle(SpanStyle(color = Blue)) {
+                    append("Sign in")
                 }
             }, modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp))
         }
     }
 }
 
-@Composable
-fun SocialMediaCard(modifier: Modifier, image: Int, label: String) {
-    Card(
-        modifier = modifier
-    ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Image(
-                painter = painterResource(image),
-                contentDescription = null,
-                modifier = Modifier.size(25.dp)
-            )
-            Spacer(modifier = Modifier.width(15.dp))
-            Text(label)
-
-        }
-
-    }
-}
-
 @Preview
 @Composable
-fun PreviewLogin() {
-    LoginBody()
+fun RegisterPreview(){
+    RegisterBody()
 }
