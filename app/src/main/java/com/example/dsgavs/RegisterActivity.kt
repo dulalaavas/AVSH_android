@@ -109,7 +109,7 @@ fun RegisterBody(){
                     .padding(horizontal = 15.dp),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
-                    Text("abc@gmail.com")
+                    Text("example@gmail.com")
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email
@@ -149,7 +149,45 @@ fun RegisterBody(){
                     .padding(horizontal = 15.dp),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
-                    Text("********")
+                    Text("Password")
+                },
+
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = PurpleGrey80,
+                    unfocusedContainerColor = PurpleGrey80,
+                    focusedIndicatorColor = Blue,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
+
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            OutlinedTextField(
+                value = password,
+                onValueChange = { data ->
+                    password = data
+                },
+                trailingIcon = {
+                    IconButton(onClick = {
+                        visibility = !visibility
+                    }) {
+                        Icon(
+                            painter = if (visibility)
+                                painterResource(R.drawable.baseline_visibility_off_24)
+                            else
+                                painterResource(R.drawable.baseline_visibility_24),
+                            contentDescription = null
+                        )
+                    }
+                },
+                visualTransformation = if (visibility) VisualTransformation.None else PasswordVisualTransformation(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 15.dp),
+                shape = RoundedCornerShape(15.dp),
+                placeholder = {
+                    Text("Confirm Password")
                 },
 
                 colors = TextFieldDefaults.colors(
