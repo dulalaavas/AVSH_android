@@ -1,12 +1,15 @@
 package com.example.dsgavs
 
+import android.app.Activity
+import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,14 +17,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -35,12 +36,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -51,9 +51,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toSize
 import com.example.dsgavs.ui.theme.Blue
 import com.example.dsgavs.ui.theme.PurpleGrey80
+import com.example.dsgavs.ui.theme.White
+import java.util.Calendar
 
 class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,38 +68,61 @@ class RegisterActivity : ComponentActivity() {
 }
 
 @Composable
-fun RegisterBody(){
-
+fun RegisterBody() {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var visibility by remember { mutableStateOf(false) }
     var terms by remember { mutableStateOf(false) }
 
-    var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by remember { mutableStateOf("Select Option") }
+    val context = LocalContext.current
+    val activity = context as Activity
 
-    val options = listOf("Option 1", "Option 2", "Option 3", "Option 4")
 
-    var textFieldSize by remember { mutableStateOf(Size.Zero)}
+    val calendar = Calendar.getInstance()
+
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    var selectedDate by remember { mutableStateOf("") }
+    val datepicker = DatePickerDialog(
+        context, { _, year, month, day ->
+            selectedDate = "$year/${month + 1}/$day"
+
+        }, year, month, day
+    )
+
+
+    val sharedPreference = context.getSharedPreferences(
+        "User",
+        Context.MODE_PRIVATE
+    )
+
+    val editor = sharedPreference.edit()
 
     Scaffold { padding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(padding)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .background(White)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(15.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Sign Up",
-                    modifier = Modifier.padding(15.dp),
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
+            Spacer(modifier = Modifier.height(80.dp))
+
+            Text(
+                "Sign Up",
+                style = TextStyle(
                     textAlign = TextAlign.Center,
-                    color = Blue
-                )
-            }
+                    color = Blue,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 28.sp
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+
+
+
             OutlinedTextField(
                 value = email,
                 onValueChange = { data ->
@@ -109,7 +133,7 @@ fun RegisterBody(){
                     .padding(horizontal = 15.dp),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
-                    Text("example@gmail.com")
+                    Text("abc@gmail.com")
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email
@@ -124,35 +148,26 @@ fun RegisterBody(){
             )
 
             Spacer(modifier = Modifier.height(20.dp))
-
             OutlinedTextField(
-                value = password,
+                enabled = false,
+                value = selectedDate,
                 onValueChange = { data ->
-                    password = data
+                    selectedDate = data
                 },
-                trailingIcon = {
-                    IconButton(onClick = {
-                        visibility = !visibility
-                    }) {
-                        Icon(
-                            painter = if (visibility)
-                                painterResource(R.drawable.baseline_visibility_off_24)
-                            else
-                                painterResource(R.drawable.baseline_visibility_24),
-                            contentDescription = null
-                        )
-                    }
-                },
-                visualTransformation = if (visibility) VisualTransformation.None else PasswordVisualTransformation(),
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clickable {
+                        datepicker.show()
+                    }
                     .padding(horizontal = 15.dp),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
-                    Text("Password")
+                    Text("dd/mm/yyyy")
                 },
 
                 colors = TextFieldDefaults.colors(
+                    disabledIndicatorColor = Color.Transparent,
+                    disabledContainerColor = PurpleGrey80,
                     focusedContainerColor = PurpleGrey80,
                     unfocusedContainerColor = PurpleGrey80,
                     focusedIndicatorColor = Blue,
@@ -160,13 +175,12 @@ fun RegisterBody(){
                 )
 
             )
-
             Spacer(modifier = Modifier.height(20.dp))
 
             OutlinedTextField(
                 value = password,
-                onValueChange = { data ->
-                    password = data
+                onValueChange = {
+                    password = it
                 },
                 trailingIcon = {
                     IconButton(onClick = {
@@ -187,7 +201,7 @@ fun RegisterBody(){
                     .padding(horizontal = 15.dp),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
-                    Text("Confirm Password")
+                    Text("********")
                 },
 
                 colors = TextFieldDefaults.colors(
@@ -199,70 +213,47 @@ fun RegisterBody(){
 
             )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)) {
-                OutlinedTextField(
-                    value = selectedOptionText,
-                    onValueChange = { },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .onGloballyPositioned { coordinates ->
-                            textFieldSize = coordinates.size.toSize()
-                        }
-                        .clickable { expanded = true },
-                    shape = RoundedCornerShape(15.dp),
-                    placeholder = { Text(text = "Select Option") },
-                    enabled = false,
-                    trailingIcon = {
-                        Icon(
-                            painter = if (visibility)
-                                painterResource(R.drawable.baseline_keyboard_arrow_down_24)
-                            else
-                                painterResource(R.drawable.baseline_keyboard_arrow_up_24),
-                            contentDescription = null
-                        )
 
-                    }
-                )
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier
-                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
-                ) {
-                    options.forEach { option ->
-                        DropdownMenuItem(
-                            text = { Text(option) },
-                            onClick = {
-                                selectedOptionText = option
-                                expanded = false
-                            }
-                        )
-                    }
-                }
-            }
-
-            Row( modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp),
-                verticalAlignment = Alignment.CenterVertically){
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Checkbox(
                     checked = terms,
                     onCheckedChange = {
                         terms = it
-
-                    }
+                    },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = Blue,
+                        checkmarkColor = White
+                    )
                 )
-                Text("I agree to the terms and conditions.",
-                    modifier = Modifier,
-                    fontSize = 18.sp
-                )
-
-
+                Text("I agree to terms & conditions")
             }
 
             Button(
-                onClick = {},
+                onClick = {
+                    if (!terms) {
+                        Toast.makeText(
+                            context,
+                            "please agree to terms &  conditions",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }else{
+                        editor.putString("email",email)
+                        editor.putString("password",password)
+                        editor.putString("date",selectedDate)
+
+                        editor.apply()
+                        Toast.makeText(
+                            context,
+                            "Success",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        activity.finish()
+
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 15.dp)
@@ -275,12 +266,11 @@ fun RegisterBody(){
                 Text("Sign Up")
             }
 
-
             Text(buildAnnotatedString {
-                append("Already have an account?")
+                append("Already have account? ")
 
                 withStyle(SpanStyle(color = Blue)) {
-                    append("Sign in")
+                    append("Sign up")
                 }
             }, modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp))
         }
@@ -289,6 +279,6 @@ fun RegisterBody(){
 
 @Preview
 @Composable
-fun RegisterPreview(){
+fun RegisterPreview() {
     RegisterBody()
 }
