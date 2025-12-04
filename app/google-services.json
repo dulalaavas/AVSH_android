@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "698176405392",
+    "firebase_url": "https://dsgavsdefaults-default-rtdb.firebaseio.com",
+    "project_id": "dsgavsdefaults",
+    "storage_bucket": "dsgavsdefaults.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:698176405392:android:1b97ef714f80655421bd15",
+        "android_client_info": {
+          "package_name": "com.example.dsgavs"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtRATpYQkQC4t1fypBr4E6fmq64XbGPv0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
