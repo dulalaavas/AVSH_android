@@ -16,7 +16,7 @@ interface UserRepo {
 
     fun register(
         email: String, password: String,
-        callback: (Boolean, String) -> Unit
+        callback: (Boolean, String, String) -> Unit
     )
 
     fun addUserToDatabase(
@@ -37,7 +37,7 @@ interface UserRepo {
 
     fun getUserByID(
         userId: String,
-        callback: (Boolean, UserModel) -> Unit
+        callback: (Boolean, String, UserModel?) -> Unit
     )
 
     fun getAllUsers(

@@ -96,13 +96,13 @@ fun LoginBody() {
 
             Text(
                 "Sign In",
-                style = TextStyle(
-                    textAlign = TextAlign.Center,
-                    color = Blue,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 28.sp
-                ),
-                modifier = Modifier.fillMaxWidth()
+                    style = TextStyle(
+                        textAlign = TextAlign.Center,
+                        color = Blue,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 28.sp
+                    ),
+                    modifier = Modifier.fillMaxWidth()
             )
 
             Text(

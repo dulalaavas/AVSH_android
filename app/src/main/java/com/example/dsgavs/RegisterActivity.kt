@@ -51,9 +51,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.dsgavs.model.UserModel
+import com.example.dsgavs.repository.UserRepoImpl
 import com.example.dsgavs.ui.theme.Blue
 import com.example.dsgavs.ui.theme.PurpleGrey80
 import com.example.dsgavs.ui.theme.White
+import com.example.dsgavs.viewmodel.UserViewModel
 import java.util.Calendar
 
 class RegisterActivity : ComponentActivity() {
@@ -69,10 +72,17 @@ class RegisterActivity : ComponentActivity() {
 
 @Composable
 fun RegisterBody() {
+    val userViewModel = remember { UserViewModel(UserRepoImpl()) }
+
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var visibility by remember { mutableStateOf(false) }
     var terms by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
+    val options = listOf("Male", "Female")
+
 
     val context = LocalContext.current
     val activity = context as Activity
@@ -120,90 +130,18 @@ fun RegisterBody() {
                 modifier = Modifier.fillMaxWidth()
             )
 
-
-
-
             OutlinedTextField(
-                value = email,
-                onValueChange = { data ->
-                    email = data
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp),
-                shape = RoundedCornerShape(15.dp),
-                placeholder = {
-                    Text("abc@gmail.com")
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email
-                ),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = PurpleGrey80,
-                    unfocusedContainerColor = PurpleGrey80,
-                    focusedIndicatorColor = Blue,
-                    unfocusedIndicatorColor = Color.Transparent
-                )
-
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-            OutlinedTextField(
-                enabled = false,
-                value = selectedDate,
-                onValueChange = { data ->
-                    selectedDate = data
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        datepicker.show()
-                    }
-                    .padding(horizontal = 15.dp),
-                shape = RoundedCornerShape(15.dp),
-                placeholder = {
-                    Text("dd/mm/yyyy")
-                },
-
-                colors = TextFieldDefaults.colors(
-                    disabledIndicatorColor = Color.Transparent,
-                    disabledContainerColor = PurpleGrey80,
-                    focusedContainerColor = PurpleGrey80,
-                    unfocusedContainerColor = PurpleGrey80,
-                    focusedIndicatorColor = Blue,
-                    unfocusedIndicatorColor = Color.Transparent
-                )
-
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-
-            OutlinedTextField(
-                value = password,
+                value = firstName,
                 onValueChange = {
-                    password = it
+                    firstName = it
                 },
-                trailingIcon = {
-                    IconButton(onClick = {
-                        visibility = !visibility
-                    }) {
-                        Icon(
-                            painter = if (visibility)
-                                painterResource(R.drawable.baseline_visibility_off_24)
-                            else
-                                painterResource(R.drawable.baseline_visibility_24),
-                            contentDescription = null
-                        )
-                    }
-                },
-                visualTransformation = if (visibility) VisualTransformation.None else PasswordVisualTransformation(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 15.dp),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
-                    Text("********")
+                    Text("First Name")
                 },
-
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = PurpleGrey80,
                     unfocusedContainerColor = PurpleGrey80,
@@ -213,70 +151,219 @@ fun RegisterBody() {
 
             )
 
+            Spacer(modifier = Modifier.height(15.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = terms,
-                    onCheckedChange = {
-                        terms = it
-                    },
-                    colors = CheckboxDefaults.colors(
-                        checkedColor = Blue,
-                        checkmarkColor = White
-                    )
-                )
-                Text("I agree to terms & conditions")
-            }
-
-            Button(
-                onClick = {
-                    if (!terms) {
-                        Toast.makeText(
-                            context,
-                            "please agree to terms &  conditions",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }else{
-                        editor.putString("email",email)
-                        editor.putString("password",password)
-                        editor.putString("date",selectedDate)
-
-                        editor.apply()
-                        Toast.makeText(
-                            context,
-                            "Success",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        activity.finish()
-
-                    }
+            OutlinedTextField(
+                value = lastName,
+                onValueChange = {
+                    lastName = it
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 15.dp)
-                    .height(60.dp),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 15.dp
-                ),
-                shape = RoundedCornerShape(10.dp)
-            ) {
-                Text("Sign Up")
-            }
+                    .padding(horizontal = 15.dp),
+                shape = RoundedCornerShape(15.dp),
+                placeholder = {
+                    Text("Last Name")
+                },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = PurpleGrey80,
+                    unfocusedContainerColor = PurpleGrey80,
+                    focusedIndicatorColor = Blue,
+                    unfocusedIndicatorColor = Color.Transparent
+                )
 
-            Text(buildAnnotatedString {
-                append("Already have account? ")
+            )
 
-                withStyle(SpanStyle(color = Blue)) {
-                    append("Sign up")
+            Spacer(modifier = Modifier.padding(15.dp))
+
+
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { data ->
+                        email = data
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 15.dp),
+                    shape = RoundedCornerShape(15.dp),
+                    placeholder = {
+                        Text("abc@gmail.com")
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email
+                    ),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = PurpleGrey80,
+                        unfocusedContainerColor = PurpleGrey80,
+                        focusedIndicatorColor = Blue,
+                        unfocusedIndicatorColor = Color.Transparent
+                    )
+
+                )
+
+
+                Spacer(modifier = Modifier.height(20.dp))
+                OutlinedTextField(
+                    enabled = false,
+                    value = selectedDate,
+                    onValueChange = { data ->
+                        selectedDate = data
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            datepicker.show()
+                        }
+                        .padding(horizontal = 15.dp),
+                    shape = RoundedCornerShape(15.dp),
+                    placeholder = {
+                        Text("dd/mm/yyyy")
+                    },
+
+                    colors = TextFieldDefaults.colors(
+                        disabledIndicatorColor = Color.Transparent,
+                        disabledContainerColor = PurpleGrey80,
+                        focusedContainerColor = PurpleGrey80,
+                        unfocusedContainerColor = PurpleGrey80,
+                        focusedIndicatorColor = Blue,
+                        unfocusedIndicatorColor = Color.Transparent
+                    )
+
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = {
+                        password = it
+                    },
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            visibility = !visibility
+                        }) {
+                            Icon(
+                                painter = if (visibility)
+                                    painterResource(R.drawable.baseline_visibility_off_24)
+                                else
+                                    painterResource(R.drawable.baseline_visibility_24),
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    visualTransformation = if (visibility) VisualTransformation.None else PasswordVisualTransformation(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 15.dp),
+                    shape = RoundedCornerShape(15.dp),
+                    placeholder = {
+                        Text("********")
+                    },
+
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = PurpleGrey80,
+                        unfocusedContainerColor = PurpleGrey80,
+                        focusedIndicatorColor = Blue,
+                        unfocusedIndicatorColor = Color.Transparent
+                    )
+
+                )
+
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(
+                        checked = terms,
+                        onCheckedChange = {
+                            terms = it
+                        },
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = Blue,
+                            checkmarkColor = White
+                        )
+                    )
+                    Text("I agree to terms & conditions")
                 }
-            }, modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp))
+
+                Button(
+                    onClick = {
+                        if (!terms) {
+                            Toast.makeText(
+                                context,
+                                "please agree to terms &  conditions",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            userViewModel.register(email, password) { success, message, userId ->
+                                if (success) {
+                                    var model = UserModel(
+                                        userId = userId,
+                                        firstName = firstName,
+                                        lastName = lastName,
+                                        gender = "",
+                                        email = email,
+                                        dob = selectedDate
+                                    )
+
+                                    userViewModel.addUserToDatabase(
+                                        userId, model
+                                    ) { success, message ->
+                                        if (success) {
+                                            Toast.makeText(
+                                                context,
+                                                message,
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                message,
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+
+                                    }
+
+                                }
+
+
+//                        editor.putString("email",email)
+//                        editor.putString("password",password)
+//                        editor.putString("date",selectedDate)
+//
+//                        editor.apply()
+//                        Toast.makeText(
+//                            context,
+//                            "Success",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                        activity.finish()
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 15.dp)
+                        .height(60.dp),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 15.dp
+                    ),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Text("Sign Up")
+                }
+
+                Text(buildAnnotatedString {
+                    append("Already have account? ")
+
+                    withStyle(SpanStyle(color = Blue)) {
+                        append("Sign in")
+                    }
+                }, modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp))
+            }
         }
     }
-}
-
 @Preview
 @Composable
 fun RegisterPreview() {
