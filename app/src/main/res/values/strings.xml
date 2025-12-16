@@ -7,4 +7,5 @@
     <string name="title_activity_register">RegisterActivity</string>
     <string name="title_activity_splash">SplashActivity</string>
     <string name="title_activity_forget_password">ForgetPasswordActivity</string>
+    <string name="title_activity_product_add">ProductAddActivity</string>
 </resources>

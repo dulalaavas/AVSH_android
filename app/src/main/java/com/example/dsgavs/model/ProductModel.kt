@@ -1,11 +1,18 @@
 package com.example.dsgavs.model
 
 class ProductModel(
-    val productId: String = "",
-    val productName: String = "",
-    val productDescription: String = "",
-    val productType: String = "",
-    val productExpiry: String = ""
+    var productId: String = "",
+    var name: String = "",
+    var description: String = "",
+    var price: Double = 0.0,
+    var categoryId: String = ""
 ) {
-
+    fun toMap(): Map<String, Any?> {
+        return mapOf(
+            "name" to name,
+            "description" to description,
+            "price" to price,
+            "categoryId" to categoryId
+        )
+    }
 }
